@@ -1,7 +1,7 @@
 package request
 
 import (
-	"github.com/Darklabel91/CNJ_Validate/CNJ"
+	"github.com/DanielFillol/CNJ_Validate/CNJ"
 )
 
 func modifyCNJ(cnjNumber string) (string, error) {
