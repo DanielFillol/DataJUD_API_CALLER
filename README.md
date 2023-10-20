@@ -1,4 +1,4 @@
-# DataJUD API CALLER
+# Datajud API CALLER
 This API is a Go project that automates the retrieval of legal data from a remote API. It's designed to work with legal cases and uses CNJ (Conselho Nacional de Justiça) numbers for data retrieval.
 You can find all API documentation on their [wiki page](https://datajud-wiki.cnj.jus.br)
 
