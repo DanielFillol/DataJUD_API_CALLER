@@ -55,8 +55,6 @@ func createFile(p string) (*os.File, error) {
 }
 
 // generateHeaders function returns a slice of strings containing the header values for the CSV file.
-//
-//	I ignore here all the movements, i will to this extraction latter
 func generateHeaders() []string {
 	return []string{
 		"Took",
@@ -68,7 +66,6 @@ func generateHeaders() []string {
 		"Hits Total Value",
 		"Hits Total Relation",
 		"Hits Max Score",
-		// Here its an [] return
 		"Index",
 		"Type",
 		"ID",
@@ -90,7 +87,6 @@ func generateHeaders() []string {
 		"County Code IBGE",
 		"County Code",
 		"County",
-		// Here its an [] return
 		"Subjects Codes",
 		"Subjects",
 	}
@@ -100,7 +96,7 @@ func generateHeaders() []string {
 func generateRow(response models.ResponseBody) [][]string {
 	var rows [][]string
 
-	// Append subjects Codes
+	// Create subject codes string
 	var subjectsCodes string
 	for _, hit := range response.Hit.Hits {
 		for i, s := range hit.Source.Subjects {
@@ -112,8 +108,7 @@ func generateRow(response models.ResponseBody) [][]string {
 		}
 	}
 
-	// Append subjects
-
+	// Create subject string
 	var subjects string
 	for _, hit := range response.Hit.Hits {
 		for i, s := range hit.Source.Subjects {

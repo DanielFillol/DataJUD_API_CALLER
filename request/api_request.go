@@ -7,7 +7,6 @@ import (
 	"github.com/DanielFillol/DataJUD_API_CALLER/models"
 	"io"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"strconv"
 	"time"
@@ -29,7 +28,6 @@ func APIRequest(url, method string, auth string, request models.ReadCsv) (models
 	// Serialize the BodyRequest struct to JSON.
 	jsonReq, err := json.Marshal(req)
 	if err != nil {
-		log.Println(err)
 		return models.ResponseBody{}, err
 	}
 
@@ -39,14 +37,12 @@ func APIRequest(url, method string, auth string, request models.ReadCsv) (models
 	// Make the API call and get the response.
 	res, err := call(url, method, auth, reqBody)
 	if err != nil {
-		log.Println(err)
 		return models.ResponseBody{}, errors.New(err.Error() + "  " + req.Query.Match.CNJNumber)
 	}
 
 	// Read the response body.
 	body, err := ioutil.ReadAll(res.Body)
 	if err != nil {
-		log.Println(err)
 		return models.ResponseBody{}, err
 	}
 
@@ -54,7 +50,6 @@ func APIRequest(url, method string, auth string, request models.ReadCsv) (models
 	var response models.ResponseBody
 	err = json.Unmarshal(body, &response)
 	if err != nil {
-		log.Println(err)
 		return models.ResponseBody{}, err
 	}
 
@@ -75,7 +70,6 @@ func call(url, method string, AUTH string, body io.Reader) (*http.Response, erro
 	// Create a new HTTP request with the specified method, URL, and request body.
 	req, err := http.NewRequest(method, url, body)
 	if err != nil {
-		log.Println(err)
 		return nil, err
 	}
 
@@ -86,14 +80,11 @@ func call(url, method string, AUTH string, body io.Reader) (*http.Response, erro
 	// Send the request and get the response.
 	response, err := client.Do(req)
 	if err != nil {
-		log.Println(err)
 		return nil, err
 	}
 
 	// If the response status code is not OK, return an error with the status code.
 	if response.StatusCode != http.StatusOK {
-		log.Println(req.URL)
-		log.Println(strconv.Itoa(response.StatusCode))
 		return nil, errors.New(strconv.Itoa(response.StatusCode))
 	}
 
