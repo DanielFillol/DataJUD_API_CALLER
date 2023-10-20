@@ -35,10 +35,11 @@ func AsyncAPIRequest(users []models.ReadCsv, numberOfWorkers int, url string, me
 				resultCh <- bodyStr
 				if err != nil {
 					// If there is an error making the API request, print the error
-					log.Println("error sending request: " + err.Error())
+					log.Println("error send request: " + err.Error())
 					errorOnApiRequests = err
 					//break
 				}
+				log.Println("success send request: " + "200 " + input.CNJNumber)
 			}
 			// When the worker goroutine is done processing inputs, signal the wait group
 			wg.Done()
