@@ -17,7 +17,7 @@ import (
 func APIRequest(url, method string, auth string, request models.ReadCsv) (models.ResponseBody, error) {
 	cnj, err := modifyCNJ(request.CNJNumber)
 	if err != nil {
-		return models.ResponseBody{}, err
+		return models.ResponseBody{}, errors.New(err.Error() + "  " + request.CNJNumber)
 	}
 
 	// Create a new BodyRequest struct with the document ID and pagination settings for the initial API call.
@@ -28,7 +28,7 @@ func APIRequest(url, method string, auth string, request models.ReadCsv) (models
 	// Serialize the BodyRequest struct to JSON.
 	jsonReq, err := json.Marshal(req)
 	if err != nil {
-		return models.ResponseBody{}, err
+		return models.ResponseBody{}, errors.New(err.Error() + "  " + req.Query.Match.CNJNumber)
 	}
 
 	// Create a new buffer with the JSON-encoded request body.
@@ -43,14 +43,14 @@ func APIRequest(url, method string, auth string, request models.ReadCsv) (models
 	// Read the response body.
 	body, err := ioutil.ReadAll(res.Body)
 	if err != nil {
-		return models.ResponseBody{}, err
+		return models.ResponseBody{}, errors.New(err.Error() + "  " + req.Query.Match.CNJNumber)
 	}
 
 	// Unmarshal the response body into a ResponseBody struct.
 	var response models.ResponseBody
 	err = json.Unmarshal(body, &response)
 	if err != nil {
-		return models.ResponseBody{}, err
+		return models.ResponseBody{}, errors.New(err.Error() + "  " + req.Query.Match.CNJNumber)
 	}
 
 	return models.ResponseBody{
