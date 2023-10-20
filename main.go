@@ -13,7 +13,7 @@ const (
 	BASE      = "https://api-publica.datajud.cnj.jus.br/api_publica_"
 	AUTH      = "APIKey cDZHYzlZa0JadVREZDJCendQbXY6SkJlTzNjLV9TRENyQk1RdnFKZGRQdw=="
 	METHOD    = "POST"
-	WORKERS   = 1
+	WORKERS   = 10
 	FILENAME  = "response"
 	FOLDER    = "data"
 	FILEPATH  = "data/requests.csv"
