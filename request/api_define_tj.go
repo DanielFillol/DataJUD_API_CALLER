@@ -6,7 +6,6 @@ import (
 )
 
 func defineTJ(cnjNumber string) (string, error) {
-	CNJ.ValidateCNJ()
 	decomposedCNJ, err := CNJ.DecomposeCNJ(cnjNumber)
 	if err != nil {
 		return "", err

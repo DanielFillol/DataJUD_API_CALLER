@@ -6,7 +6,7 @@ import (
 	"sync"
 )
 
-const API = "1/_search"
+const API = "/_search"
 
 // AsyncAPIRequest makes API requests asynchronously
 func AsyncAPIRequest(users []models.ReadCsv, numberOfWorkers int, url string, method string, auth string) ([]models.ResponseBody, error) {
