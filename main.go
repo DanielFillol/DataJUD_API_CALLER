@@ -3,7 +3,9 @@ package main
 import (
 	"github.com/DanielFillol/DataJUD_API_CALLER/csv"
 	"github.com/DanielFillol/DataJUD_API_CALLER/request"
+	"io"
 	"log"
+	"os"
 	"time"
 )
 
@@ -25,6 +27,18 @@ func main() {
 	if err != nil {
 		log.Fatal("Error loading requests from CSV: ", err)
 	}
+
+	// Setup Log file
+	logFile, err := os.Create("output.log.txt")
+	if err != nil {
+		log.Fatal("Failed to open log file:", err)
+	}
+	defer logFile.Close()
+
+	// Create a multi-writer that writes to both the file and os.Stdout (terminal)
+	multiWriter := io.MultiWriter(os.Stdout, logFile)
+
+	log.SetOutput(multiWriter)
 
 	// Make API requests asynchronously
 	start := time.Now()
