@@ -9,17 +9,29 @@ import (
 	"strconv"
 )
 
-// Write writes a CSV file with the given file name and folder name, and the data from the responses.
 func Write(fileName string, folderName string, responses []models.ResponseBody) error {
+	err := writeLawsuits(fileName, folderName, responses)
+	if err != nil {
+		return err
+	}
+	err = writeMovements(fileName+"_movements", folderName, responses)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// WriteLawsuits writes a CSV file with the given file name and folder name, and the data from the responses.
+func writeLawsuits(fileName string, folderName string, responses []models.ResponseBody) error {
 	// Create a slice to hold all the rows for the CSV file
 	var rows [][]string
 
 	// Add the headers to the slice
-	rows = append(rows, generateHeaders())
+	rows = append(rows, generateHeadersLawsuits())
 
 	// Add the data rows to the slice
 	for _, response := range responses {
-		rows = append(rows, generateRow(response)...)
+		rows = append(rows, generateRowLawsuits(response)...)
 	}
 
 	// Create the CSV file
@@ -35,7 +47,7 @@ func Write(fileName string, folderName string, responses []models.ResponseBody) 
 	// Create a new CSV writer
 	w := csv.NewWriter(cf)
 
-	// Write all the rows to the CSV file
+	// WriteLawsuits all the rows to the CSV file
 	err = w.WriteAll(rows)
 	if err != nil {
 		log.Println(err)
@@ -54,8 +66,8 @@ func createFile(p string) (*os.File, error) {
 	return os.Create(p)
 }
 
-// generateHeaders function returns a slice of strings containing the header values for the CSV file.
-func generateHeaders() []string {
+// generateHeadersLawsuits function returns a slice of strings containing the header values for the CSV file.
+func generateHeadersLawsuits() []string {
 	return []string{
 		"Took",
 		"Time Out",
@@ -92,8 +104,8 @@ func generateHeaders() []string {
 	}
 }
 
-// generateRow function takes in a single models.WriteStruct argument and returns a slice of strings containing the values to be written in a row of the CSV file.
-func generateRow(response models.ResponseBody) [][]string {
+// generateRowLawsuits function takes in a single models.WriteStruct argument and returns a slice of strings containing the values to be written in a row of the CSV file.
+func generateRowLawsuits(response models.ResponseBody) [][]string {
 	var rows [][]string
 
 	// Create subject codes string
@@ -159,6 +171,81 @@ func generateRow(response models.ResponseBody) [][]string {
 		row = append(row, subjectsCodes)
 		row = append(row, subjects)
 		rows = append(rows, row)
+	}
+
+	return rows
+}
+
+// WriteMovements writes a CSV file with the given file name and folder name, and the data from the responses.
+func writeMovements(fileName string, folderName string, responses []models.ResponseBody) error {
+	// Create a slice to hold all the rows for the CSV file
+	var rows [][]string
+
+	// Add the headers to the slice
+	rows = append(rows, generateHeadersMovements())
+
+	// Add the data rows to the slice
+	for _, response := range responses {
+		rows = append(rows, generateRowMovements(response)...)
+
+	}
+
+	// Create the CSV file
+	cf, err := createFile(folderName + "/" + fileName + ".csv")
+	if err != nil {
+		log.Println(err)
+		return err
+	}
+
+	// Close the file when the function completes
+	defer cf.Close()
+
+	// Create a new CSV writer
+	w := csv.NewWriter(cf)
+
+	// WriteLawsuits all the rows to the CSV file
+	err = w.WriteAll(rows)
+	if err != nil {
+		log.Println(err)
+		return err
+	}
+
+	return nil
+}
+
+// generateHeadersLawsuits function returns a slice of strings containing the header values for the CSV file.
+func generateHeadersMovements() []string {
+	return []string{
+		"LawsuitNumber",
+		"Movement Code",
+		"Movement Date",
+		"Movement",
+		"Movement Complement Code",
+		"Movement Complement Name",
+		"Movement Complement Description",
+		"Movement Complement Value",
+	}
+}
+
+// generateRowLawsuits function takes in a single models.WriteStruct argument and returns a slice of strings containing the values to be written in a row of the CSV file.
+func generateRowMovements(response models.ResponseBody) [][]string {
+	var rows [][]string
+
+	for _, lawsuit := range response.Hit.Hits {
+		for _, movement := range lawsuit.Source.Movements {
+			for _, complement := range movement.Complement {
+				var row []string
+				row = append(row, lawsuit.Source.LawsuitNumber)
+				row = append(row, strconv.Itoa(movement.Code))
+				row = append(row, movement.DateTime.String())
+				row = append(row, movement.Name)
+				row = append(row, strconv.Itoa(complement.Code))
+				row = append(row, complement.Name)
+				row = append(row, complement.Description)
+				row = append(row, strconv.Itoa(complement.Value))
+				rows = append(rows, row)
+			}
+		}
 	}
 
 	return rows
