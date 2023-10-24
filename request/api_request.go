@@ -12,23 +12,23 @@ import (
 	"time"
 )
 
-// APIRequest makes an API request to the specified URL using the specified HTTP method and authentication header.
-// It returns a models.ResponseBody struct containing the API response body and an error (if any).
-func APIRequest(url, method string, auth string, request models.ReadCsv) (models.ResponseBody, error) {
+// APIRequestLawsuit makes an API request to the specified URL using the specified HTTP method and authentication header.
+// It returns a models.ResponseBodyLawsuit struct containing the API response body and an error (if any).
+func APIRequestLawsuit(url, method string, auth string, request models.ReadCsvLaawsuit) (models.ResponseBodyLawsuit, error) {
 	cnj, err := modifyCNJ(request.CNJNumber)
 	if err != nil {
-		return models.ResponseBody{}, errors.New(err.Error() + "  " + request.CNJNumber)
+		return models.ResponseBodyLawsuit{}, errors.New(err.Error() + "  " + request.CNJNumber)
 	}
 
-	// Create a new BodyRequest struct with the document ID and pagination settings for the initial API call.
-	req := models.BodyRequest{
-		Query: models.Query{Match: models.Match{CNJNumber: cnj}},
+	// Create a new BodyRequestLawsuit struct with the document ID and pagination settings for the initial API call.
+	req := models.BodyRequestLawsuit{
+		Query: models.QueryLawsuit{Match: models.MatchLawsuit{CNJNumber: cnj}},
 	}
 
-	// Serialize the BodyRequest struct to JSON.
+	// Serialize the BodyRequestLawsuit struct to JSON.
 	jsonReq, err := json.Marshal(req)
 	if err != nil {
-		return models.ResponseBody{}, errors.New(err.Error() + "  " + req.Query.Match.CNJNumber)
+		return models.ResponseBodyLawsuit{}, errors.New(err.Error() + "  " + req.Query.Match.CNJNumber)
 	}
 
 	// Create a new buffer with the JSON-encoded request body.
@@ -37,23 +37,23 @@ func APIRequest(url, method string, auth string, request models.ReadCsv) (models
 	// Make the API call and get the response.
 	res, err := call(url, method, auth, reqBody)
 	if err != nil {
-		return models.ResponseBody{}, errors.New(err.Error() + "  " + req.Query.Match.CNJNumber)
+		return models.ResponseBodyLawsuit{}, errors.New(err.Error() + "  " + req.Query.Match.CNJNumber)
 	}
 
 	// Read the response body.
 	body, err := ioutil.ReadAll(res.Body)
 	if err != nil {
-		return models.ResponseBody{}, errors.New(err.Error() + "  " + req.Query.Match.CNJNumber)
+		return models.ResponseBodyLawsuit{}, errors.New(err.Error() + "  " + req.Query.Match.CNJNumber)
 	}
 
-	// Unmarshal the response body into a ResponseBody struct.
-	var response models.ResponseBody
+	// Unmarshal the response body into a ResponseBodyLawsuit struct.
+	var response models.ResponseBodyLawsuit
 	err = json.Unmarshal(body, &response)
 	if err != nil {
-		return models.ResponseBody{}, errors.New(err.Error() + "  " + req.Query.Match.CNJNumber)
+		return models.ResponseBodyLawsuit{}, errors.New(err.Error() + "  " + req.Query.Match.CNJNumber)
 	}
 
-	return models.ResponseBody{
+	return models.ResponseBodyLawsuit{
 		Took:     response.Took,
 		TimedOut: response.TimedOut,
 		Shards:   response.Shards,
