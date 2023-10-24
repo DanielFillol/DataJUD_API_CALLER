@@ -2,7 +2,7 @@ package models
 
 import "time"
 
-type ResponseBody struct {
+type ResponseBodyLawsuit struct {
 	Took     int   `json:"took"`
 	TimedOut bool  `json:"timed_out"`
 	Shards   Shard `json:"_shards"`
@@ -43,7 +43,7 @@ type Source struct {
 	Court            string     `json:"tribunal"`
 	DateLastUpdate   time.Time  `json:"dataHoraUltimaAtualizacao"`
 	Degree           string     `json:"grau"`
-	Timestamp        time.Time  `json:"@timestamp"`
+	Timestamp        time.Time  `json:"@TimestampCode"`
 	DistributionDate time.Time  `json:"dataAjuizamento"`
 	Movements        []Movement `json:"movimentos"`
 	Id               string     `json:"id"`
