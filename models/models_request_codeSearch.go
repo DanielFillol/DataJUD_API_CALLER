@@ -26,8 +26,7 @@ type Must struct {
 }
 
 type Match struct {
-	ClasseCodigo        int `json:"classe.codigo,omitempty"`
-	OrgaoJulgadorCodigo int `json:"orgaoJulgador.codigo,omitempty"`
+	ClasseCodigo int `json:"classe.codigo,omitempty"`
 }
 
 type Sort struct {
