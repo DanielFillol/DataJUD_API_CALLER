@@ -94,7 +94,7 @@ func generateHeadersCode() []string {
 func generateRowCode(response models.ResponseBodyNextPage) [][]string {
 	var rows [][]string
 
-	for i, lawsuit := range response.Hit.Hits {
+	for _, lawsuit := range response.Hit.Hits {
 		row := []string{
 			// All those that repeat
 			strconv.Itoa(response.Took),
