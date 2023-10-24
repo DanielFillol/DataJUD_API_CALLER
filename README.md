@@ -28,6 +28,7 @@ To use the project, follow these steps:
 - Load data into a CSV file. Ensure that the CSV file follows the expected format for input data. Only one column with the CNJ numbers.
 - Set the API endpoint, authentication header, and other configuration constants in the main.go file as needed. The API KEY is public and can be found [here](https://datajud-wiki.cnj.jus.br/api-publica/acesso)
 - Run the project using go run main.go. The program will read the input data from the CSV file, make asynchronous API requests, and save the API responses in CSV files.
+- You can modify ```IS_LAWSUIT```  constant to ```true```  or ```false``` to use the lawsuit endpoint of the API or the CNJ code search
 
 ## Getting Started
 To get started with this project, you'll need to have Go installed on your system. You can download and install Go from the [official website](https://golang.org/dl/)
