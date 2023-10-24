@@ -1,13 +1,13 @@
 package models
 
-type BodyRequest struct {
-	Query Query `json:"query,omitempty"`
+type BodyRequestLawsuit struct {
+	Query QueryLawsuit `json:"query,omitempty"`
 }
 
-type Query struct {
-	Match Match `json:"match,omitempty"`
+type QueryLawsuit struct {
+	Match MatchLawsuit `json:"match,omitempty"`
 }
 
-type Match struct {
+type MatchLawsuit struct {
 	CNJNumber string `json:"numeroProcesso,omitempty"`
 }
