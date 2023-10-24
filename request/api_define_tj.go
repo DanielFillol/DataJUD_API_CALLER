@@ -5,7 +5,12 @@ import (
 	"strings"
 )
 
-func defineTJ(cnjNumber string) (string, error) {
+func defineTJLawsuit(cnjNumber string) (string, error) {
+	isValid, err := CNJ.ValidateCNJ(cnjNumber)
+	if err != nil || !isValid {
+		return "", err
+	}
+
 	decomposedCNJ, err := CNJ.DecomposeCNJ(cnjNumber)
 	if err != nil {
 		return "", err
