@@ -10,24 +10,20 @@ import (
 )
 
 const (
-	BASE      = "https://api-publica.datajud.cnj.jus.br/api_publica_"
-	AUTH      = "APIKey cDZHYzlZa0JadVREZDJCendQbXY6SkJlTzNjLV9TRENyQk1RdnFKZGRQdw=="
-	METHOD    = "POST"
-	WORKERS   = 10
-	FILENAME  = "response"
-	FOLDER    = "data"
-	FILEPATH  = "data/requests.csv"
-	SEPARATOR = ','
-	HEADER    = true
+	BASE             = "https://api-publica.datajud.cnj.jus.br/api_publica_"
+	AUTH             = "APIKey cDZHYzlZa0JadVREZDJCendQbXY6SkJlTzNjLV9TRENyQk1RdnFKZGRQdw=="
+	METHOD           = "POST"
+	WORKERS          = 10
+	FILENAME         = "response"
+	FOLDER           = "data"
+	FILEPATH_LAWSUIT = "data/requestsLawsuits.csv"
+	FILEPATH_CODE    = "data/requestsCode.csv"
+	SEPARATOR        = ','
+	HEADER           = true
+	IS_LAWSUIT       = true
 )
 
 func main() {
-	// Load data to be requested from CSV file
-	requests, err := csv.Read(FILEPATH, SEPARATOR, HEADER)
-	if err != nil {
-		log.Fatal("Error loading requests from CSV: ", err)
-	}
-
 	// Setup Log file
 	logFile, err := os.Create("output.log.txt")
 	if err != nil {
@@ -40,19 +36,53 @@ func main() {
 
 	log.SetOutput(multiWriter)
 
-	// Make API requests asynchronously
-	start := time.Now()
-	log.Println("Starting API calls...")
+	if IS_LAWSUIT {
+		// Load data to be requested from CSV file
+		requests, err := csv.ReadLawsuit(FILEPATH_LAWSUIT, SEPARATOR, HEADER)
+		if err != nil {
+			log.Fatal("Error loading requests from CSV: ", err)
+		}
 
-	results, err := request.AsyncAPIRequest(requests, WORKERS, BASE, METHOD, AUTH)
-	if err != nil {
-		log.Println("Error making API requests: ", err)
-	}
-	log.Println("Finished API calls in ", time.Since(start))
+		// Make API requests asynchronously
+		start := time.Now()
+		log.Println("Starting API calls...")
 
-	// Write API response to CSV file
-	err = csv.Write(FILENAME, FOLDER, results)
-	if err != nil {
-		log.Fatal("Error writing API response to CSV: ", err)
+		results, err := request.AsyncAPIRequestLawsuit(requests, WORKERS, BASE, METHOD, AUTH)
+		if err != nil {
+			log.Println("Error making API requests: ", err)
+		}
+		log.Println("Finished API calls in ", time.Since(start))
+
+		// WriteLawsuits API response to CSV file
+		err = csv.WriteLawsuits(FILENAME, FOLDER, results)
+		if err != nil {
+			log.Fatal("Error writing API response to CSV: ", err)
+		}
+	} else {
+		// Load data to be requested from CSV file
+		requests, err := csv.ReadCode(FILEPATH_CODE, SEPARATOR, HEADER)
+		if err != nil {
+			log.Fatal("Error loading requests from CSV: ", err)
+		}
+
+		// Make API requests asynchronously
+		start := time.Now()
+		log.Println("Starting API calls...")
+
+		results, err := request.AsyncAPIRequestCode(requests, WORKERS, BASE, METHOD, AUTH)
+		if err != nil {
+			log.Println("Error making API requests: ", err)
+		}
+		log.Println("Finished API calls in ", time.Since(start))
+
+		// WriteLawsuits API response to CSV file
+		s := time.Now()
+		log.Println("Start parsing to .csv ")
+		err = csv.WriteCode(FILENAME, FOLDER, results)
+		if err != nil {
+			log.Fatal("Error writing API response to CSV: ", err)
+		}
+		log.Println("Finished parsing to .csv in", time.Since(s))
 	}
+
 }
