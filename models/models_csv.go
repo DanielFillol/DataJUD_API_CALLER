@@ -6,6 +6,5 @@ type ReadCsvLaawsuit struct {
 
 type ReadCsvCode struct {
 	ClassCode string
-	CourtCode string
 	CourtName string
 }
