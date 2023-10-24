@@ -33,15 +33,13 @@ func ReadCode(filePath string, separator rune, skipHeaderLine bool) ([]models.Re
 			if i != 0 {
 				data = append(data, models.ReadCsvCode{
 					ClassCode: line[0],
-					CourtCode: line[1],
-					CourtName: line[2],
+					CourtName: line[1],
 				})
 			}
 		} else {
 			data = append(data, models.ReadCsvCode{
 				ClassCode: line[0],
-				CourtCode: line[1],
-				CourtName: line[2],
+				CourtName: line[1],
 			})
 		}
 	}
