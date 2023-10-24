@@ -18,10 +18,6 @@ func APIRequestCode(url, method string, auth string, request models.ReadCsvCode)
 	if err != nil {
 		return models.ResponseBodyNextPage{}, errors.New("failed to parse the class code to int: " + request.ClassCode)
 	}
-	court, err := strconv.Atoi(request.CourtCode)
-	if err != nil {
-		return models.ResponseBodyNextPage{}, errors.New("failed to parse the court code to int: " + request.CourtCode)
-	}
 
 	req := models.BodyRequestCode{
 		Size: 100,
@@ -29,7 +25,6 @@ func APIRequestCode(url, method string, auth string, request models.ReadCsvCode)
 			Bool: models.Bool{
 				Must: []models.Must{
 					{Match: models.Match{ClasseCodigo: class}},
-					{Match: models.Match{OrgaoJulgadorCodigo: court}},
 				},
 			},
 		},
@@ -104,7 +99,6 @@ func callNextPage(url string, method string, auth string, req models.BodyRequest
 				Bool: models.Bool{
 					Must: []models.Must{
 						{Match: models.Match{ClasseCodigo: req.Query.Bool.Must[0].Match.ClasseCodigo}},
-						{Match: models.Match{OrgaoJulgadorCodigo: req.Query.Bool.Must[1].Match.OrgaoJulgadorCodigo}},
 					},
 				},
 			},
