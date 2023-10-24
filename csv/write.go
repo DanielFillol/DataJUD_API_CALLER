@@ -9,7 +9,8 @@ import (
 	"strconv"
 )
 
-func Write(fileName string, folderName string, responses []models.ResponseBody) error {
+// WriteLawsuits writes two CSV files with the given file name and folder name, and the data from the responses. One file for the Lawsuits and another for the lawsuit movements
+func WriteLawsuits(fileName string, folderName string, responses []models.ResponseBodyLawsuit) error {
 	err := writeLawsuits(fileName, folderName, responses)
 	if err != nil {
 		return err
@@ -21,8 +22,17 @@ func Write(fileName string, folderName string, responses []models.ResponseBody) 
 	return nil
 }
 
-// WriteLawsuits writes a CSV file with the given file name and folder name, and the data from the responses.
-func writeLawsuits(fileName string, folderName string, responses []models.ResponseBody) error {
+// createFile function takes in a file path and creates a file in the specified directory. It returns a pointer to the created file and an error if there is any.
+func createFile(p string) (*os.File, error) {
+	if err := os.MkdirAll(filepath.Dir(p), 0770); err != nil {
+		log.Println(err)
+		return nil, err
+	}
+	return os.Create(p)
+}
+
+// writeLawsuits writes a CSV file with the given file name and folder name, and the data from the responses.
+func writeLawsuits(fileName string, folderName string, responses []models.ResponseBodyLawsuit) error {
 	// Create a slice to hold all the rows for the CSV file
 	var rows [][]string
 
@@ -35,7 +45,7 @@ func writeLawsuits(fileName string, folderName string, responses []models.Respon
 	}
 
 	// Create the CSV file
-	cf, err := createFile(folderName + "/" + fileName + "requests.csv")
+	cf, err := createFile(folderName + "/" + fileName + "requestsLawsuits.csv")
 	if err != nil {
 		log.Println(err)
 		return err
@@ -55,15 +65,6 @@ func writeLawsuits(fileName string, folderName string, responses []models.Respon
 	}
 
 	return nil
-}
-
-// createFile function takes in a file path and creates a file in the specified directory. It returns a pointer to the created file and an error if there is any.
-func createFile(p string) (*os.File, error) {
-	if err := os.MkdirAll(filepath.Dir(p), 0770); err != nil {
-		log.Println(err)
-		return nil, err
-	}
-	return os.Create(p)
 }
 
 // generateHeadersLawsuits function returns a slice of strings containing the header values for the CSV file.
@@ -105,32 +106,8 @@ func generateHeadersLawsuits() []string {
 }
 
 // generateRowLawsuits function takes in a single models.WriteStruct argument and returns a slice of strings containing the values to be written in a row of the CSV file.
-func generateRowLawsuits(response models.ResponseBody) [][]string {
+func generateRowLawsuits(response models.ResponseBodyLawsuit) [][]string {
 	var rows [][]string
-
-	// Create subject codes string
-	var subjectsCodes string
-	for _, hit := range response.Hit.Hits {
-		for i, s := range hit.Source.Subjects {
-			if i != 0 {
-				subjectsCodes += " | " + strconv.Itoa(s.Code)
-			} else {
-				subjectsCodes += strconv.Itoa(s.Code)
-			}
-		}
-	}
-
-	// Create subject string
-	var subjects string
-	for _, hit := range response.Hit.Hits {
-		for i, s := range hit.Source.Subjects {
-			if i != 0 {
-				subjects += " | " + s.Name
-			} else {
-				subjects += s.Name
-			}
-		}
-	}
 
 	for _, lawsuit := range response.Hit.Hits {
 		row := []string{
@@ -168,6 +145,18 @@ func generateRowLawsuits(response models.ResponseBody) [][]string {
 		row = append(row, strconv.Itoa(lawsuit.Source.CourtInstance.CountyCodeIBGE))
 		row = append(row, strconv.Itoa(lawsuit.Source.CourtInstance.Code))
 		row = append(row, lawsuit.Source.CourtInstance.Name)
+
+		var subjectsCodes string
+		var subjects string
+		for j, s := range lawsuit.Source.Subjects {
+			if j != 0 {
+				subjects += " | " + s.Name
+				subjectsCodes += " | " + strconv.Itoa(s.Code)
+			} else {
+				subjects += s.Name
+				subjectsCodes += strconv.Itoa(s.Code)
+			}
+		}
 		row = append(row, subjectsCodes)
 		row = append(row, subjects)
 		rows = append(rows, row)
@@ -177,7 +166,7 @@ func generateRowLawsuits(response models.ResponseBody) [][]string {
 }
 
 // WriteMovements writes a CSV file with the given file name and folder name, and the data from the responses.
-func writeMovements(fileName string, folderName string, responses []models.ResponseBody) error {
+func writeMovements(fileName string, folderName string, responses []models.ResponseBodyLawsuit) error {
 	// Create a slice to hold all the rows for the CSV file
 	var rows [][]string
 
@@ -228,7 +217,7 @@ func generateHeadersMovements() []string {
 }
 
 // generateRowLawsuits function takes in a single models.WriteStruct argument and returns a slice of strings containing the values to be written in a row of the CSV file.
-func generateRowMovements(response models.ResponseBody) [][]string {
+func generateRowMovements(response models.ResponseBodyLawsuit) [][]string {
 	var rows [][]string
 
 	for _, lawsuit := range response.Hit.Hits {
