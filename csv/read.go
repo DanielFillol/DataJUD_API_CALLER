@@ -7,9 +7,9 @@ import (
 	"os"
 )
 
-// The Read function reads data from a CSV file located at the specified filePath, with the specified separator.
-// It returns a slice of models.ReadCsv structs containing the data from the CSV file, excluding the header.
-func Read(filePath string, separator rune, skipHeaderLine bool) ([]models.ReadCsv, error) {
+// The ReadLawsuit function reads data from a CSV file located at the specified filePath, with the specified separator.
+// It returns a slice of models.ReadCsvLaawsuit structs containing the data from the CSV file, excluding the header.
+func ReadLawsuit(filePath string, separator rune, skipHeaderLine bool) ([]models.ReadCsvLaawsuit, error) {
 	csvFile, err := os.Open(filePath)
 	if err != nil {
 		log.Println(err)
@@ -26,19 +26,19 @@ func Read(filePath string, separator rune, skipHeaderLine bool) ([]models.ReadCs
 		return nil, err
 	}
 
-	var data []models.ReadCsv
+	var data []models.ReadCsvLaawsuit
 	for i, line := range csvData {
 		if skipHeaderLine {
 			// Skip the header line
 			if i != 0 {
 				document := line[0]
-				data = append(data, models.ReadCsv{
+				data = append(data, models.ReadCsvLaawsuit{
 					CNJNumber: document,
 				})
 			}
 		} else {
 			document := line[0]
-			data = append(data, models.ReadCsv{
+			data = append(data, models.ReadCsvLaawsuit{
 				CNJNumber: document,
 			})
 		}
