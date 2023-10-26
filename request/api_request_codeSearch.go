@@ -10,6 +10,8 @@ import (
 	"strconv"
 )
 
+const SIZE = 100
+
 // APIRequestCode makes an API request to the specified URL using the specified HTTP method and authentication header.
 // It returns a models.ResponseBodyNextPage struct containing the API response body and an error (if any).
 func APIRequestCode(url, method string, auth string, request models.ReadCsvCode) (models.ResponseBodyNextPage, error) {
@@ -20,7 +22,7 @@ func APIRequestCode(url, method string, auth string, request models.ReadCsvCode)
 	}
 
 	req := models.BodyRequestCode{
-		Size: 100,
+		Size: SIZE,
 		Query: models.Query{
 			Bool: models.Bool{
 				Must: []models.Must{
@@ -67,8 +69,8 @@ func APIRequestCode(url, method string, auth string, request models.ReadCsvCode)
 	}
 
 	// If the API response has more pages of data, make additional API calls and append the results to the response.
-	if len(response.Hit.Hits) == 100 {
-		nextPage := strconv.Itoa(int(response.Hit.Hits[99].Sort[0]))
+	if len(response.Hit.Hits) == SIZE {
+		nextPage := strconv.Itoa(int(response.Hit.Hits[SIZE-1].Sort[0]))
 		// Make the API call and get the response.
 		lawsuits, err := callNextPage(url, method, auth, req, nextPage)
 		if err != nil {
@@ -94,7 +96,7 @@ func callNextPage(url string, method string, auth string, req models.BodyRequest
 		log.Println("success getting next page:" + strconv.Itoa(c))
 		// Create a new BodyRequest struct with the document ID and updated pagination settings for the next API call.
 		request := models.BodyRequestCodeNextPage{
-			Size: 100,
+			Size: SIZE,
 			Query: models.Query{
 				Bool: models.Bool{
 					Must: []models.Must{
@@ -142,12 +144,12 @@ func callNextPage(url string, method string, auth string, req models.BodyRequest
 		lawsuits = append(lawsuits, response.Hit.Hits...)
 
 		// If the API response indicates there are no more pages, break out of the loop.
-		if len(response.Hit.Hits) < 100 {
+		if len(response.Hit.Hits) < SIZE {
 			break
 		}
 
 		// Update the cursor for the next API call.
-		c = int(response.Hit.Hits[99].Sort[0])
+		c = int(response.Hit.Hits[SIZE-1].Sort[0])
 	}
 
 	return lawsuits, nil
