@@ -35,8 +35,9 @@ func AsyncAPIRequestCode(users []models.ReadCsvCode, numberOfWorkers int, url st
 					log.Println("error send request: " + err.Error())
 					errorOnApiRequests = err
 					//break
+				} else {
+					log.Println("success send request: " + "200 " + input.CourtName)
 				}
-				log.Println("success send request: " + "200 " + input.CourtName)
 			}
 			// When the worker goroutine is done processing inputs, signal the wait group
 			wg.Done()

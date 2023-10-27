@@ -38,8 +38,9 @@ func AsyncAPIRequestLawsuit(users []models.ReadCsvLaawsuit, numberOfWorkers int,
 					log.Println("error send request: " + err.Error())
 					errorOnApiRequests = err
 					//break
+				} else {
+					log.Println("success send request: " + "200 " + input.CNJNumber)
 				}
-				log.Println("success send request: " + "200 " + input.CNJNumber)
 			}
 			// When the worker goroutine is done processing inputs, signal the wait group
 			wg.Done()
